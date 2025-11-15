@@ -90,10 +90,11 @@
         <table id="stockTable" style="display: none;">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">Sector <span class="sort-arrow">↕️</span></th>
-                    <th onclick="sortTable(1)">Symbol <span class="sort-arrow">↕️</span></th>
-                    <th onclick="sortTable(2)">Company Name <span class="sort-arrow">↕️</span></th>
-                    <th onclick="sortTable(3)">Weight (%) <span class="sort-arrow">↕️</span></th>
+                    <th>#</th>
+                    <th onclick="sortTable(1)">Sector <span class="sort-arrow">↕️</span></th>
+                    <th onclick="sortTable(2)">Symbol <span class="sort-arrow">↕️</span></th>
+                    <th onclick="sortTable(3)">Company Name <span class="sort-arrow">↕️</span></th>
+                    <th onclick="sortTable(4)">Weight (%) <span class="sort-arrow">↕️</span></th>
                 </tr>
             </thead>
             <tbody id="stockTableBody">
@@ -121,13 +122,14 @@
             const tbody = document.getElementById('stockTableBody');
             tbody.innerHTML = '';
             
-            stockData.forEach(stock => {
+            stockData.forEach((stock, index) => {
                 const row = tbody.insertRow();
                 
-                row.insertCell(0).textContent = stock.sector;
-                row.insertCell(1).textContent = stock.symbol;
-                row.insertCell(2).textContent = stock.name;
-                const weightCell = row.insertCell(3);
+                row.insertCell(0).textContent = index + 1;
+                row.insertCell(1).textContent = stock.sector;
+                row.insertCell(2).textContent = stock.symbol;
+                row.insertCell(3).textContent = stock.name;
+                const weightCell = row.insertCell(4);
                 weightCell.textContent = stock.weight.toFixed(2);
                 weightCell.className = 'weight-cell';
             });
@@ -141,10 +143,10 @@
             stockData.sort((a, b) => {
                 let aVal, bVal;
                 switch(columnIndex) {
-                    case 0: aVal = a.sector; bVal = b.sector; break;
-                    case 1: aVal = a.symbol; bVal = b.symbol; break;
-                    case 2: aVal = a.name; bVal = b.name; break;
-                    case 3: aVal = a.weight; bVal = b.weight; break;
+                    case 1: aVal = a.sector; bVal = b.sector; break;
+                    case 2: aVal = a.symbol; bVal = b.symbol; break;
+                    case 3: aVal = a.name; bVal = b.name; break;
+                    case 4: aVal = a.weight; bVal = b.weight; break;
                 }
 
                 if (typeof aVal === 'number') {
