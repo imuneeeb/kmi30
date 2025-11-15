@@ -94,24 +94,14 @@ if __name__ == '__main__':
     import os
     import sys
     
-    # Run on 0.0.0.0:443 with HTTPS by default (accessible from network and localhost)
-    host = '0.0.0.0'  # This allows both localhost and network access
-    port = 443
-    ssl_context = 'adhoc'  # Self-signed certificate
-    
-    # Allow HTTP mode for development
-    if '--http' in sys.argv:
-        port = 8000  # Use port 8000 to avoid macOS AirPlay conflict
-        ssl_context = None
-        print("Running in HTTP mode on port 8000")
-        print("Accessible at:")
-        print("  - http://localhost:8000")
-        print("  - http://127.0.0.1:8000")
-        print("  - http://0.0.0.0:8000")
+    # Default to localhost, use 0.0.0.0 if --network flag is provided
+    host = '127.0.0.1'
+    if '--network' in sys.argv:
+        host = '0.0.0.0'
+        print("Running on network mode - accessible from other devices")
     else:
-        print("Running with HTTPS on port 443")
-        print("Note: Requires sudo and pyOpenSSL")
+        print("Running on localhost mode - local access only")
     
-    port = int(os.environ.get('PORT', port))
-    
-    app.run(debug=False, host=host, port=port, ssl_context=ssl_context)
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Access at: http://{host}:{port}")
+    app.run(debug=True, host=host, port=port)
