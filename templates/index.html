@@ -103,14 +103,6 @@
             font-weight: 600;
             color: #667eea;
         }
-        .total-row {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: 600;
-        }
-        .total-row td {
-            border-top: 2px solid #667eea;
-        }
     </style>
 </head>
 <body>
@@ -135,15 +127,6 @@
             </thead>
             <tbody id="stockTableBody">
             </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><strong>TOTAL</strong></td>
-                    <td><strong><span id="totalWeightValue">0.00</span></strong></td>
-                </tr>
-            </tfoot>
         </table>
     </div>
 
@@ -156,17 +139,11 @@
                 const response = await fetch('/api/stocks');
                 stockData = await response.json();
                 renderTable();
-                updateTotalWeight();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('stockTable').style.display = 'table';
             } catch (error) {
                 document.getElementById('loading').innerHTML = 'Error loading data: ' + error.message;
             }
-        }
-
-        function updateTotalWeight() {
-            const total = stockData.reduce((sum, stock) => sum + stock.weight, 0);
-            document.getElementById('totalWeightValue').textContent = total.toFixed(2);
         }
 
         function renderTable() {
@@ -208,7 +185,6 @@
             });
 
             renderTable();
-            updateTotalWeight();
             updateSortArrows(columnIndex, isAscending);
         }
 
