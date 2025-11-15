@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSX KMI30</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            font-size: 2.5em;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        th, td { 
+            padding: 15px 20px; 
+            text-align: left; 
+        }
+        th { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            cursor: pointer; 
+            position: sticky; 
+            top: 0;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+        th:hover { 
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        td {
+            border-bottom: 1px solid #e8ecf4;
+            color: #2c3e50;
+        }
+        tr:nth-child(even) { 
+            background-color: #f8fafc; 
+        }
+        tr:hover { 
+            background-color: #e3f2fd;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+        .loading { 
+            text-align: center; 
+            padding: 50px; 
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        .sort-arrow { 
+            margin-left: 8px; 
+            font-size: 0.8em;
+        }
+        .weight-cell {
+            font-weight: 600;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PSX KMI30</h1>
+        <div id="loading" class="loading">Loading stock data...</div>
+        <table id="stockTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Sector <span class="sort-arrow">↕️</span></th>
+                    <th onclick="sortTable(1)">Symbol <span class="sort-arrow">↕️</span></th>
+                    <th onclick="sortTable(2)">Company Name <span class="sort-arrow">↕️</span></th>
+                    <th onclick="sortTable(3)">Weight (%) <span class="sort-arrow">↕️</span></th>
+                </tr>
+            </thead>
+            <tbody id="stockTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let stockData = [];
+        let sortDirection = {};
+
+        async function loadStockData() {
+            try {
+                const response = await fetch('/api/stocks');
+                stockData = await response.json();
+                renderTable();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('stockTable').style.display = 'table';
+            } catch (error) {
+                document.getElementById('loading').innerHTML = 'Error loading data: ' + error.message;
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('stockTableBody');
+            tbody.innerHTML = '';
+            
+            stockData.forEach(stock => {
+                const row = tbody.insertRow();
+                
+                row.insertCell(0).textContent = stock.sector;
+                row.insertCell(1).textContent = stock.symbol;
+                row.insertCell(2).textContent = stock.name;
+                const weightCell = row.insertCell(3);
+                weightCell.textContent = stock.weight.toFixed(2);
+                weightCell.className = 'weight-cell';
+            });
+        }
+
+        function sortTable(columnIndex) {
+            const isAscending = sortDirection[columnIndex] !== true;
+            sortDirection = {};
+            sortDirection[columnIndex] = isAscending;
+
+            stockData.sort((a, b) => {
+                let aVal, bVal;
+                switch(columnIndex) {
+                    case 0: aVal = a.sector; bVal = b.sector; break;
+                    case 1: aVal = a.symbol; bVal = b.symbol; break;
+                    case 2: aVal = a.name; bVal = b.name; break;
+                    case 3: aVal = a.weight; bVal = b.weight; break;
+                }
+
+                if (typeof aVal === 'number') {
+                    return isAscending ? aVal - bVal : bVal - aVal;
+                } else {
+                    return isAscending ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                }
+            });
+
+            renderTable();
+            updateSortArrows(columnIndex, isAscending);
+        }
+
+        function updateSortArrows(activeColumn, isAscending) {
+            const arrows = document.querySelectorAll('.sort-arrow');
+            arrows.forEach((arrow, index) => {
+                if (index === activeColumn) {
+                    arrow.textContent = isAscending ? '↑' : '↓';
+                } else {
+                    arrow.textContent = '↕️';
+                }
+            });
+        }
+
+        loadStockData();
+    </script>
+</body>
+</html>
