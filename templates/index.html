@@ -73,9 +73,31 @@
             color: #2c3e50;
             font-size: 1.2em;
         }
-        .sort-arrow { 
-            margin-left: 8px; 
-            font-size: 0.8em;
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .nav-item {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         .weight-cell {
             font-weight: 600;
@@ -87,10 +109,10 @@
     <div class="container">
         <h1>PSX KMI30</h1>
         
-        <div style="text-align: center; margin-bottom: 20px;">
-            <a href="/" style="color: #667eea; text-decoration: none; margin: 0 15px; font-weight: 500;">Home</a>
-            <a href="/dashboard" style="color: #667eea; text-decoration: none; margin: 0 15px; font-weight: 500;">Dashboard</a>
-            <a href="/sectors" style="color: #667eea; text-decoration: none; margin: 0 15px; font-weight: 500;">Sectors</a>
+        <div class="nav-menu">
+            <a href="/" class="nav-item">🏠 Home</a>
+            <a href="/dashboard" class="nav-item active">📊 Dashboard</a>
+            <a href="/sectors" class="nav-item">🏢 Sectors</a>
         </div>
         <div id="loading" class="loading">Loading stock data...</div>
         <table id="stockTable" style="display: none;">
