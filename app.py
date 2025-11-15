@@ -79,4 +79,17 @@ def get_stocks():
     return jsonify(stocks)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    import os
+    import sys
+    
+    # Default to localhost, use 0.0.0.0 if --network flag is provided
+    host = '127.0.0.1'
+    if '--network' in sys.argv:
+        host = '0.0.0.0'
+        print("Running on network mode - accessible from other devices")
+    else:
+        print("Running on localhost mode - local access only")
+    
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Access at: http://{host}:{port}")
+    app.run(debug=True, host=host, port=port)
