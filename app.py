@@ -69,6 +69,10 @@ def landing():
 def dashboard():
     return render_template('index.html')
 
+@app.route('/sectors')
+def sectors():
+    return render_template('sectors.html')
+
 @app.route('/api/stocks')
 def get_stocks():
     stocks = []
