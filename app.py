@@ -1,4 +1,5 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, abort
+from urllib.parse import unquote
 
 app = Flask(__name__)
 
@@ -76,6 +77,20 @@ def dashboard():
 @app.route('/sectors')
 def sectors():
     return render_template('sectors.html')
+
+@app.route('/sector/<path:sector_name>')
+def sector_ratios(sector_name):
+    sector_name = unquote(sector_name)
+    if sector_name not in sectors_data:
+        abort(404)
+    companies = []
+    for symbol in sectors_data[sector_name]:
+        companies.append({
+            'symbol': symbol,
+            'name': company_names.get(symbol, f"{symbol} Limited"),
+            'weight': company_weights.get(symbol, 0)
+        })
+    return render_template('sector_ratios.html', sector_name=sector_name, companies=companies)
 
 @app.route('/api/stocks')
 def get_stocks():

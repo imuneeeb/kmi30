@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ sector_name }} - Investment Ratios</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center; 
+            margin-bottom: 10px; 
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+        .sector-title {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .nav-item {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        th, td { 
+            padding: 15px 20px; 
+            text-align: left; 
+        }
+        th { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+        td {
+            border-bottom: 1px solid #e8ecf4;
+            color: #2c3e50;
+        }
+        tr:nth-child(even) { 
+            background-color: #f8fafc; 
+        }
+        tr:hover { 
+            background-color: #e3f2fd;
+        }
+        .no-data {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+            padding: 20px;
+        }
+        .ratio-name {
+            cursor: pointer;
+            color: #667eea;
+            text-decoration: underline;
+        }
+        .ratio-name:hover {
+            color: #5a6fd8;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Investment Ratios</h1>
+        <div class="sector-title">{{ sector_name }}</div>
+        
+        <div class="nav-menu">
+            <a href="/" class="nav-item">🏠 Home</a>
+            <a href="/dashboard" class="nav-item">📊 Dashboard</a>
+            <a href="/sectors" class="nav-item">🏢 Sectors</a>
+        </div>
+
+        {% for company in companies %}
+        <h3 style="color: #2c3e50; margin-top: 40px; margin-bottom: 20px;">
+            {{ company.symbol }} - {{ company.name }}
+        </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ratio</th>
+                    <th>2025</th>
+                    <th>2024</th>
+                    <th>2023</th>
+                    <th>2022</th>
+                    <th>2021</th>
+                    <th>2020</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('pe')">P/E Ratio</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('pb')">P/B Ratio</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('roe')">ROE (%)</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('roa')">ROA (%)</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('de')">Debt/Equity</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('cr')">Current Ratio</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('dy')">Dividend Yield (%)</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('eps')">EPS</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+                <tr>
+                    <td><strong><span class="ratio-name" onclick="showExplanation('bv')">Book Value</span></strong></td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                    <td class="no-data">-</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
+
+    <div id="ratioModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalContent"></p>
+        </div>
+    </div>
+
+    <script>
+        const ratioExplanations = {
+            'pe': {
+                title: 'P/E Ratio (Price-to-Earnings)',
+                content: 'Shows how much investors are willing to pay for each rupee of earnings. Example: If a stock costs Rs.100 and earns Rs.10 per share, P/E = 10. Like paying 10 years of rent upfront for a house. Lower P/E may indicate undervalued stock, higher P/E suggests growth expectations.'
+            },
+            'pb': {
+                title: 'P/B Ratio (Price-to-Book)',
+                content: 'Compares stock price to book value per share. Example: If a company\'s assets minus debts equal Rs.50 per share but stock trades at Rs.75, P/B = 1.5. Like buying a house for 1.5x its assessed value. Below 1 may indicate undervaluation.'
+            },
+            'roe': {
+                title: 'ROE (Return on Equity)',
+                content: 'Shows how efficiently a company uses shareholders\' money to generate profit. Example: If you invest Rs.100 and company earns Rs.15, ROE = 15%. Like getting 15% annual return on your savings account. Higher ROE indicates better management efficiency.'
+            },
+            'roa': {
+                title: 'ROA (Return on Assets)',
+                content: 'Measures how efficiently a company uses its assets to generate profit. Example: If a company has Rs.1000 in assets and earns Rs.80, ROA = 8%. Like a taxi driver earning Rs.8 for every Rs.100 worth of taxi. Higher ROA shows better asset utilization.'
+            },
+            'de': {
+                title: 'Debt/Equity Ratio',
+                content: 'Shows how much debt a company has relative to shareholders\' equity. Example: If debt is Rs.60 and equity is Rs.40, D/E = 1.5. Like having Rs.1.5 in loans for every Rs.1 of your own money. Lower ratios indicate less financial risk.'
+            },
+            'cr': {
+                title: 'Current Ratio',
+                content: 'Measures ability to pay short-term debts with short-term assets. Example: If current assets are Rs.150 and current liabilities Rs.100, ratio = 1.5. Like having Rs.1.5 in your wallet for every Rs.1 you owe this month. Above 1 is generally good.'
+            },
+            'dy': {
+                title: 'Dividend Yield',
+                content: 'Shows annual dividend as percentage of stock price. Example: If stock costs Rs.100 and pays Rs.5 dividend yearly, yield = 5%. Like getting 5% annual interest on a fixed deposit. Higher yield provides more regular income to investors.'
+            },
+            'eps': {
+                title: 'EPS (Earnings Per Share)',
+                content: 'Company\'s profit divided by number of shares. Example: If company earns Rs.1 million with 100,000 shares, EPS = Rs.10. Like dividing a pizza equally among friends - each gets Rs.10 worth. Higher EPS indicates better profitability per share.'
+            },
+            'bv': {
+                title: 'Book Value Per Share',
+                content: 'Company\'s net worth divided by shares outstanding. Example: If assets minus debts equal Rs.5 million with 100,000 shares, book value = Rs.50. Like the liquidation value if company sold everything and paid debts. Compares what you pay vs. what you actually own.'
+            }
+        };
+
+        function showExplanation(ratioType) {
+            const explanation = ratioExplanations[ratioType];
+            document.getElementById('modalTitle').textContent = explanation.title;
+            document.getElementById('modalContent').textContent = explanation.content;
+            document.getElementById('ratioModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('ratioModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('ratioModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

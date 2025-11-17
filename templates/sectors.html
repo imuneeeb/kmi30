@@ -158,7 +158,7 @@
                 const companies = sectorsData[sectorName];
                 const sectorCard = document.createElement('div');
                 sectorCard.className = 'sector-card';
-                sectorCard.onclick = () => toggleCompanies(sectorName);
+                sectorCard.onclick = () => window.location.href = `/sector/${encodeURIComponent(sectorName)}`;
                 
                 sectorCard.innerHTML = `
                     <div class="sector-name">${sectorName}</div>

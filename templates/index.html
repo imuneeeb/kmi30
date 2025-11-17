@@ -177,7 +177,10 @@
                 const row = tbody.insertRow();
                 
                 row.insertCell(0).textContent = index + 1;
-                row.insertCell(1).textContent = stock.sector;
+                const sectorCell = row.insertCell(1);
+                sectorCell.textContent = stock.sector;
+                sectorCell.style.cursor = 'pointer';
+                sectorCell.onclick = () => window.location.href = `/sector/${encodeURIComponent(stock.sector)}`;
                 row.insertCell(2).textContent = stock.symbol;
                 row.insertCell(3).textContent = stock.name;
                 const weightCell = row.insertCell(4);
